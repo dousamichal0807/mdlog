@@ -1,6 +1,6 @@
-use std::borrow::Borrow;
-use std::borrow::BorrowMut;
 use std::io;
+use std::ops::Deref;
+use std::ops::DerefMut;
 
 use crate::Logger;
 use crate::LogLevel;
@@ -9,7 +9,7 @@ type LoggerVec = Vec<Box<dyn Logger + Send + Sync>>;
 
 /// Represents a [`Logger`] that consists of many [`Logger`]s.
 ///
-/// [`CompositeLogger`] is used through its [`Borrow`] and [`BorrowMut`]
+/// [`CompositeLogger`] is used through its [`Deref`] and [`DerefMut`]
 /// implementations which yield a borrow to the inner [`Vec`] of [`Logger`]s.
 pub struct CompositeLogger (LoggerVec);
 
@@ -35,14 +35,16 @@ impl Logger for CompositeLogger {
     }
 }
 
-impl Borrow<LoggerVec> for CompositeLogger {
-    fn borrow(&self) -> &LoggerVec {
+impl Deref for CompositeLogger {
+    type Target = LoggerVec;
+
+    fn deref(&self) -> &LoggerVec {
         &self.0
     }
 }
 
-impl BorrowMut<LoggerVec> for CompositeLogger {
-    fn borrow_mut(&mut self) -> &mut LoggerVec {
+impl DerefMut for CompositeLogger {
+    fn deref_mut(&mut self) -> &mut LoggerVec {
         &mut self.0
     }
 }
