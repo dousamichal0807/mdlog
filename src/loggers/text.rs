@@ -20,7 +20,7 @@ use crate::LogLevel;
 /// ```rust
 /// use mdlog::Logger;
 /// use mdlog::LogLevel;
-/// use mdlog::TextLogger;
+/// use mdlog::loggers::TextLogger;
 ///
 /// use std::io::stdout;
 ///
