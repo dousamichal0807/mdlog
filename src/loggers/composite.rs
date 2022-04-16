@@ -21,8 +21,26 @@ impl CompositeLogger {
 
     /// Creates a new [`CompositeLogger`] with given capacity of the underlying
     /// [`Vec`]. See [`Vec::with_capacity`] method for more information.
+    ///
+    /// # Parameters
+    ///
+    ///  -  `capacity`: capacity of the underlying [`Vec`]
     pub fn with_capacity(capacity: usize) -> Self {
         Self(Vec::with_capacity(capacity))
+    }
+
+    pub fn add<L>(&mut self, logger: L)
+    where L: Logger {
+        self.0.push(logger)
+    }
+
+    /// Merges `self` with another instance of [`CompositeLogger`].
+    ///
+    /// # Parameters
+    ///
+    ///  -  `other`: the other instance of [`CompositeLogger`] to merge with
+    pub fn append(&mut self, mut other: Self) {
+        self.0.append(&mut other.0);
     }
 }
 
@@ -37,7 +55,6 @@ impl Logger for CompositeLogger {
 
 impl Deref for CompositeLogger {
     type Target = LoggerVec;
-
     fn deref(&self) -> &LoggerVec {
         &self.0
     }
