@@ -9,7 +9,9 @@ use std::io;
 ///
 /// Note that [`Logger`] trait does not specify how given message is logged nor
 /// where it should be logged to.
-pub trait Logger {
+///
+/// [`log`]: Logger::log
+pub trait Logger: Send + Sync {
     /// Method for logging a message.
     ///
     /// # Parameters
