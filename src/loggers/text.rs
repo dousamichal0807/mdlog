@@ -28,10 +28,6 @@ use crate::LogLevel;
 /// output stream. The output stream can be anything, from [`Stdout`] to [`File`] or
 /// [`TcpStream`].
 ///
-/// [`File`]: std::fs::File
-/// [`Stdout`]: std::io::Stdout
-/// [`TcpStream`]: std::net::TcpStream
-///
 /// # Usage
 ///
 /// ```rust
@@ -52,14 +48,22 @@ use crate::LogLevel;
 ///     logger.log(LogLevel::Fatal, "NO! FATAL ERROR! Application is shut down!");
 /// }
 /// ```
+///
+/// [`File`]: std::fs::File
+/// [`Stdout`]: std::io::Stdout
+/// [`TcpStream`]: std::net::TcpStream
 pub struct TextLogger<W>
-    where W: Write {
+where
+    W: Send + Sync + Write
+{
     min_log_level: LogLevel,
     writer: W,
 }
 
 impl<W> TextLogger<W>
-    where W: Write {
+where
+    W: Write + Send + Sync
+{
     /// Creates a new [`TextLogger`] instance with given name, minimum log level and
     /// output stream.
     ///
@@ -82,7 +86,9 @@ impl<W> TextLogger<W>
 }
 
 impl<W> Logger for TextLogger<W>
-    where W: Write {
+where
+    W: Write + Send + Sync
+{
     fn log(&mut self, log_level: LogLevel, message: &str) -> io::Result<()> {
         // Do not do anything if log level is too low:
         if log_level < self.min_log_level { return Result::Ok(()) }

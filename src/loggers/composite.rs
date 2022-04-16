@@ -22,13 +22,11 @@ use std::ops::DerefMut;
 use crate::Logger;
 use crate::LogLevel;
 
-type LoggerVec = Vec<Box<dyn Logger + Send + Sync>>;
-
 /// Represents a [`Logger`] that consists of many [`Logger`]s.
 ///
 /// [`CompositeLogger`] is used through its [`Deref`] and [`DerefMut`]
 /// implementations which yield a borrow to the inner [`Vec`] of [`Logger`]s.
-pub struct CompositeLogger (LoggerVec);
+pub struct CompositeLogger (Vec<Box<dyn Logger>>);
 
 impl CompositeLogger {
     /// Creates a new [`CompositeLogger`] instance.
@@ -44,11 +42,6 @@ impl CompositeLogger {
     ///  -  `capacity`: capacity of the underlying [`Vec`]
     pub fn with_capacity(capacity: usize) -> Self {
         Self(Vec::with_capacity(capacity))
-    }
-
-    pub fn add<L>(&mut self, logger: L)
-    where L: Logger {
-        self.0.push(logger)
     }
 
     /// Merges `self` with another instance of [`CompositeLogger`].
@@ -71,14 +64,14 @@ impl Logger for CompositeLogger {
 }
 
 impl Deref for CompositeLogger {
-    type Target = LoggerVec;
-    fn deref(&self) -> &LoggerVec {
+    type Target = Vec<Box<dyn Logger>>;
+    fn deref(&self) -> &Vec<Box<dyn Logger>> {
         &self.0
     }
 }
 
 impl DerefMut for CompositeLogger {
-    fn deref_mut(&mut self) -> &mut LoggerVec {
+    fn deref_mut(&mut self) -> &mut Vec<Box<dyn Logger>> {
         &mut self.0
     }
 }
