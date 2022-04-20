@@ -60,15 +60,13 @@ impl LogLevel {
 
 impl Display for LogLevel {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        writeln!(f, "{}",
-                 match self {
-                     Self::Debug => "DEBUG",
-                     Self::Info => "INFO",
-                     Self::Warning => "WARN",
-                     Self::Error => "ERROR",
-                     Self::Fatal => "FATAL",
-                 }
-        )
+        write!(f, "{}", match self {
+            Self::Debug => "DEBUG",
+            Self::Info => "INFO",
+            Self::Warning => "WARN",
+            Self::Error => "ERROR",
+            Self::Fatal => "FATAL",
+        })
     }
 }
 
