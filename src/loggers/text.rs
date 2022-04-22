@@ -73,10 +73,7 @@ where
     /// - `min_log_level`: minimum log level
     /// - `writer`: an output stream the log is written into
     pub fn new(min_log_level: LogLevel, writer: W) -> Self {
-        Self {
-            min_log_level,
-            writer,
-        }
+        Self { min_log_level, writer }
     }
 
     /// Returns the minimum log level of the [`Logger`] instance.
@@ -92,9 +89,11 @@ where
     fn log(&mut self, log_level: LogLevel, message: &str) -> io::Result<()> {
         // Do not do anything if log level is too low:
         if log_level < self.min_log_level { return Result::Ok(()) }
+        // Construct what to show as category:
+        let category = thread::current().name()
+            .map(|name| format!(" {}", name))
+            .unwrap_or_default();
         // Write to the specified stream:
-        writeln!(self.writer, "[{} {}]@{}: {}",
-                 thread::current().name().unwrap_or(""),
-                 log_level, Local::now(), message)
+        writeln!(self.writer, "{} [{} {}]: {}", Local::new(), log_level, category, message)
     }
 }
