@@ -94,6 +94,6 @@ where
             .map(|name| format!(" {}", name))
             .unwrap_or_default();
         // Write to the specified stream:
-        writeln!(self.writer, "{} [{} {}]: {}", Local::new(), log_level, category, message)
+        writeln!(self.writer, "{} [{} {}]: {}", Local::now(), log_level, category, message)
     }
 }
